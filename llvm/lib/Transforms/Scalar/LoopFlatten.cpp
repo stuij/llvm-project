@@ -99,7 +99,7 @@ static cl::opt<bool>
                      "overflow checks won't reject flattening"));
 
 static cl::opt<bool>
-    VersionLoops("loop-flatten-version-loops", cl::Hidden, cl::init(true),
+    VersionLoops("loop-flatten-version-loops", cl::Hidden, cl::init(false),
                  cl::desc("Version loops if flattened loop could overflow"));
 
 namespace {
