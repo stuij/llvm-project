@@ -1899,6 +1899,15 @@ PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
   MPM.addPass(createModuleToPostOrderCGSCCPassAdaptor(ArgumentPromotionPass()));
 
   FunctionPassManager FPM;
+
+  LoopPassManager UnrollLPM;
+  UnrollLPM.addPass(LoopFullUnrollPass(Level.getSpeedupLevel(),
+                                     /* OnlyWhenForced= */ !PTO.LoopUnrolling,
+                                     PTO.ForgetAllSCEVInLoopUnroll));
+  FPM.addPass(createFunctionToLoopPassAdaptor(std::move(UnrollLPM),
+                                              /*UseMemorySSA=*/false,
+                                              /*UseBlockFrequencyInfo=*/true));
+
   // The IPO Passes may leave cruft around. Clean up after them.
   FPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(FPM, Level);
